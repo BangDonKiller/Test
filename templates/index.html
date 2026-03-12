@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>📒 記帳程式</title>
+  <link rel="stylesheet" href="/static/css/style.css" />
+</head>
+<body>
+  <!-- ── Top Bar ─────────────────────────────────────────────── -->
+  <header class="top-bar">
+    <span class="top-bar__title">📒 記帳程式</span>
+  </header>
+
+  <!-- ── Main Layout ────────────────────────────────────────── -->
+  <main class="layout">
+
+    <!-- ── Calendar Panel ──────────────────────────────────── -->
+    <section class="card calendar-panel" aria-label="月曆">
+      <div class="cal-nav">
+        <button class="btn btn--icon" id="btn-prev" aria-label="上個月">&#9664;</button>
+        <span class="cal-nav__label" id="month-label"></span>
+        <button class="btn btn--icon" id="btn-next" aria-label="下個月">&#9654;</button>
+      </div>
+
+      <div class="cal-grid" role="grid" aria-label="日期格">
+        <div class="cal-grid__weekdays" role="row">
+          <span class="weekday">一</span>
+          <span class="weekday">二</span>
+          <span class="weekday">三</span>
+          <span class="weekday">四</span>
+          <span class="weekday">五</span>
+          <span class="weekday weekend">六</span>
+          <span class="weekday weekend">日</span>
+        </div>
+        <div class="cal-grid__days" id="cal-days" role="row"></div>
+      </div>
+    </section>
+
+    <!-- ── Transaction Panel ───────────────────────────────── -->
+    <section class="card transaction-panel" aria-label="記帳清單">
+      <div class="trans-header">
+        <h2 class="trans-header__title" id="trans-title">請選擇日期</h2>
+        <button class="btn btn--add" id="btn-add" aria-label="新增記帳">➕ 新增</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="trans-table" role="table" aria-label="記帳清單">
+          <thead>
+            <tr>
+              <th>類型</th>
+              <th>分類</th>
+              <th class="text-right">金額</th>
+              <th class="hide-sm">備註</th>
+              <th class="col-actions">操作</th>
+            </tr>
+          </thead>
+          <tbody id="trans-body">
+            <tr class="empty-row"><td colspan="5">尚無記帳資料</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <!-- ── Summary Bar ────────────────────────────────────────── -->
+  <footer class="summary-bar" aria-label="本月摘要">
+    <span class="summary-bar__item summary-bar__item--income" id="sum-income">本月收入：＋ 0 元</span>
+    <span class="summary-bar__item summary-bar__item--expense" id="sum-expense">本月支出：－ 0 元</span>
+    <span class="summary-bar__item summary-bar__item--balance" id="sum-balance">結餘：＋ 0 元</span>
+  </footer>
+
+  <!-- ── Modal Overlay ──────────────────────────────────────── -->
+  <div class="modal-overlay hidden" id="modal-overlay" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal">
+      <h3 class="modal__title" id="modal-title">新增記帳</h3>
+
+      <form id="modal-form" novalidate>
+        <!-- Type -->
+        <div class="form-group">
+          <label class="form-label">類型</label>
+          <div class="radio-group">
+            <label class="radio-label radio-label--expense">
+              <input type="radio" name="type" value="expense" checked /> 支出
+            </label>
+            <label class="radio-label radio-label--income">
+              <input type="radio" name="type" value="income" /> 收入
+            </label>
+          </div>
+        </div>
+
+        <!-- Category -->
+        <div class="form-group">
+          <label class="form-label" for="sel-category">分類</label>
+          <select class="form-control" id="sel-category" name="category" required></select>
+        </div>
+
+        <!-- Amount -->
+        <div class="form-group">
+          <label class="form-label" for="inp-amount">金額</label>
+          <input class="form-control" type="number" id="inp-amount" name="amount"
+                 min="0.01" step="0.01" placeholder="請輸入金額" required />
+        </div>
+
+        <!-- Note -->
+        <div class="form-group">
+          <label class="form-label" for="inp-note">備註</label>
+          <input class="form-control" type="text" id="inp-note" name="note"
+                 maxlength="100" placeholder="選填" />
+        </div>
+
+        <p class="form-error hidden" id="form-error" role="alert"></p>
+
+        <div class="modal__actions">
+          <button type="submit" class="btn btn--primary">確認</button>
+          <button type="button" class="btn btn--secondary" id="btn-cancel">取消</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ── Confirm Dialog ─────────────────────────────────────── -->
+  <div class="modal-overlay hidden" id="confirm-overlay" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="modal modal--sm">
+      <h3 class="modal__title" id="confirm-title">確認刪除</h3>
+      <p class="confirm-msg">確定要刪除這筆記帳記錄嗎？</p>
+      <div class="modal__actions">
+        <button class="btn btn--danger" id="btn-confirm-ok">刪除</button>
+        <button class="btn btn--secondary" id="btn-confirm-cancel">取消</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Toast Notification ─────────────────────────────────── -->
+  <div class="toast hidden" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>
